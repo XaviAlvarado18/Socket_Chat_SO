@@ -7,186 +7,6 @@
 #endif
 
 #include "chat.pb-c.h"
-void   chat__user_list__init
-                     (Chat__UserList         *message)
-{
-  static const Chat__UserList init_value = CHAT__USER_LIST__INIT;
-  *message = init_value;
-}
-size_t chat__user_list__get_packed_size
-                     (const Chat__UserList *message)
-{
-  assert(message->base.descriptor == &chat__user_list__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t chat__user_list__pack
-                     (const Chat__UserList *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &chat__user_list__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t chat__user_list__pack_to_buffer
-                     (const Chat__UserList *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &chat__user_list__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Chat__UserList *
-       chat__user_list__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Chat__UserList *)
-     protobuf_c_message_unpack (&chat__user_list__descriptor,
-                                allocator, len, data);
-}
-void   chat__user_list__free_unpacked
-                     (Chat__UserList *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &chat__user_list__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   chat__users_online__init
-                     (Chat__UsersOnline         *message)
-{
-  static const Chat__UsersOnline init_value = CHAT__USERS_ONLINE__INIT;
-  *message = init_value;
-}
-size_t chat__users_online__get_packed_size
-                     (const Chat__UsersOnline *message)
-{
-  assert(message->base.descriptor == &chat__users_online__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t chat__users_online__pack
-                     (const Chat__UsersOnline *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &chat__users_online__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t chat__users_online__pack_to_buffer
-                     (const Chat__UsersOnline *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &chat__users_online__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Chat__UsersOnline *
-       chat__users_online__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Chat__UsersOnline *)
-     protobuf_c_message_unpack (&chat__users_online__descriptor,
-                                allocator, len, data);
-}
-void   chat__users_online__free_unpacked
-                     (Chat__UsersOnline *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &chat__users_online__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   chat__user_option__init
-                     (Chat__UserOption         *message)
-{
-  static const Chat__UserOption init_value = CHAT__USER_OPTION__INIT;
-  *message = init_value;
-}
-size_t chat__user_option__get_packed_size
-                     (const Chat__UserOption *message)
-{
-  assert(message->base.descriptor == &chat__user_option__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t chat__user_option__pack
-                     (const Chat__UserOption *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &chat__user_option__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t chat__user_option__pack_to_buffer
-                     (const Chat__UserOption *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &chat__user_option__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Chat__UserOption *
-       chat__user_option__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Chat__UserOption *)
-     protobuf_c_message_unpack (&chat__user_option__descriptor,
-                                allocator, len, data);
-}
-void   chat__user_option__free_unpacked
-                     (Chat__UserOption *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &chat__user_option__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   chat__answer__init
-                     (Chat__Answer         *message)
-{
-  static const Chat__Answer init_value = CHAT__ANSWER__INIT;
-  *message = init_value;
-}
-size_t chat__answer__get_packed_size
-                     (const Chat__Answer *message)
-{
-  assert(message->base.descriptor == &chat__answer__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t chat__answer__pack
-                     (const Chat__Answer *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &chat__answer__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t chat__answer__pack_to_buffer
-                     (const Chat__Answer *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &chat__answer__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Chat__Answer *
-       chat__answer__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Chat__Answer *)
-     protobuf_c_message_unpack (&chat__answer__descriptor,
-                                allocator, len, data);
-}
-void   chat__answer__free_unpacked
-                     (Chat__Answer *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &chat__answer__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
 void   chat__user__init
                      (Chat__User         *message)
 {
@@ -232,484 +52,401 @@ void   chat__user__free_unpacked
   assert(message->base.descriptor == &chat__user__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   chat__new_user__init
-                     (Chat__NewUser         *message)
+void   chat__new_user_request__init
+                     (Chat__NewUserRequest         *message)
 {
-  static const Chat__NewUser init_value = CHAT__NEW_USER__INIT;
+  static const Chat__NewUserRequest init_value = CHAT__NEW_USER_REQUEST__INIT;
   *message = init_value;
 }
-size_t chat__new_user__get_packed_size
-                     (const Chat__NewUser *message)
+size_t chat__new_user_request__get_packed_size
+                     (const Chat__NewUserRequest *message)
 {
-  assert(message->base.descriptor == &chat__new_user__descriptor);
+  assert(message->base.descriptor == &chat__new_user_request__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t chat__new_user__pack
-                     (const Chat__NewUser *message,
+size_t chat__new_user_request__pack
+                     (const Chat__NewUserRequest *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &chat__new_user__descriptor);
+  assert(message->base.descriptor == &chat__new_user_request__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t chat__new_user__pack_to_buffer
-                     (const Chat__NewUser *message,
+size_t chat__new_user_request__pack_to_buffer
+                     (const Chat__NewUserRequest *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &chat__new_user__descriptor);
+  assert(message->base.descriptor == &chat__new_user_request__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Chat__NewUser *
-       chat__new_user__unpack
+Chat__NewUserRequest *
+       chat__new_user_request__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Chat__NewUser *)
-     protobuf_c_message_unpack (&chat__new_user__descriptor,
+  return (Chat__NewUserRequest *)
+     protobuf_c_message_unpack (&chat__new_user_request__descriptor,
                                 allocator, len, data);
 }
-void   chat__new_user__free_unpacked
-                     (Chat__NewUser *message,
+void   chat__new_user_request__free_unpacked
+                     (Chat__NewUserRequest *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &chat__new_user__descriptor);
+  assert(message->base.descriptor == &chat__new_user_request__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   chat__status__init
-                     (Chat__Status         *message)
+void   chat__send_message_request__init
+                     (Chat__SendMessageRequest         *message)
 {
-  static const Chat__Status init_value = CHAT__STATUS__INIT;
+  static const Chat__SendMessageRequest init_value = CHAT__SEND_MESSAGE_REQUEST__INIT;
   *message = init_value;
 }
-size_t chat__status__get_packed_size
-                     (const Chat__Status *message)
+size_t chat__send_message_request__get_packed_size
+                     (const Chat__SendMessageRequest *message)
 {
-  assert(message->base.descriptor == &chat__status__descriptor);
+  assert(message->base.descriptor == &chat__send_message_request__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t chat__status__pack
-                     (const Chat__Status *message,
+size_t chat__send_message_request__pack
+                     (const Chat__SendMessageRequest *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &chat__status__descriptor);
+  assert(message->base.descriptor == &chat__send_message_request__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t chat__status__pack_to_buffer
-                     (const Chat__Status *message,
+size_t chat__send_message_request__pack_to_buffer
+                     (const Chat__SendMessageRequest *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &chat__status__descriptor);
+  assert(message->base.descriptor == &chat__send_message_request__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Chat__Status *
-       chat__status__unpack
+Chat__SendMessageRequest *
+       chat__send_message_request__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Chat__Status *)
-     protobuf_c_message_unpack (&chat__status__descriptor,
+  return (Chat__SendMessageRequest *)
+     protobuf_c_message_unpack (&chat__send_message_request__descriptor,
                                 allocator, len, data);
 }
-void   chat__status__free_unpacked
-                     (Chat__Status *message,
+void   chat__send_message_request__free_unpacked
+                     (Chat__SendMessageRequest *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &chat__status__descriptor);
+  assert(message->base.descriptor == &chat__send_message_request__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   chat__message__init
-                     (Chat__Message         *message)
+void   chat__incoming_message_response__init
+                     (Chat__IncomingMessageResponse         *message)
 {
-  static const Chat__Message init_value = CHAT__MESSAGE__INIT;
+  static const Chat__IncomingMessageResponse init_value = CHAT__INCOMING_MESSAGE_RESPONSE__INIT;
   *message = init_value;
 }
-size_t chat__message__get_packed_size
-                     (const Chat__Message *message)
+size_t chat__incoming_message_response__get_packed_size
+                     (const Chat__IncomingMessageResponse *message)
 {
-  assert(message->base.descriptor == &chat__message__descriptor);
+  assert(message->base.descriptor == &chat__incoming_message_response__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t chat__message__pack
-                     (const Chat__Message *message,
+size_t chat__incoming_message_response__pack
+                     (const Chat__IncomingMessageResponse *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &chat__message__descriptor);
+  assert(message->base.descriptor == &chat__incoming_message_response__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t chat__message__pack_to_buffer
-                     (const Chat__Message *message,
+size_t chat__incoming_message_response__pack_to_buffer
+                     (const Chat__IncomingMessageResponse *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &chat__message__descriptor);
+  assert(message->base.descriptor == &chat__incoming_message_response__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Chat__Message *
-       chat__message__unpack
+Chat__IncomingMessageResponse *
+       chat__incoming_message_response__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Chat__Message *)
-     protobuf_c_message_unpack (&chat__message__descriptor,
+  return (Chat__IncomingMessageResponse *)
+     protobuf_c_message_unpack (&chat__incoming_message_response__descriptor,
                                 allocator, len, data);
 }
-void   chat__message__free_unpacked
-                     (Chat__Message *message,
+void   chat__incoming_message_response__free_unpacked
+                     (Chat__IncomingMessageResponse *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &chat__message__descriptor);
+  assert(message->base.descriptor == &chat__incoming_message_response__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor chat__user_list__field_descriptors[2] =
+void   chat__user_list_request__init
+                     (Chat__UserListRequest         *message)
+{
+  static const Chat__UserListRequest init_value = CHAT__USER_LIST_REQUEST__INIT;
+  *message = init_value;
+}
+size_t chat__user_list_request__get_packed_size
+                     (const Chat__UserListRequest *message)
+{
+  assert(message->base.descriptor == &chat__user_list_request__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t chat__user_list_request__pack
+                     (const Chat__UserListRequest *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &chat__user_list_request__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t chat__user_list_request__pack_to_buffer
+                     (const Chat__UserListRequest *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &chat__user_list_request__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Chat__UserListRequest *
+       chat__user_list_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Chat__UserListRequest *)
+     protobuf_c_message_unpack (&chat__user_list_request__descriptor,
+                                allocator, len, data);
+}
+void   chat__user_list_request__free_unpacked
+                     (Chat__UserListRequest *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &chat__user_list_request__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   chat__user_list_response__init
+                     (Chat__UserListResponse         *message)
+{
+  static const Chat__UserListResponse init_value = CHAT__USER_LIST_RESPONSE__INIT;
+  *message = init_value;
+}
+size_t chat__user_list_response__get_packed_size
+                     (const Chat__UserListResponse *message)
+{
+  assert(message->base.descriptor == &chat__user_list_response__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t chat__user_list_response__pack
+                     (const Chat__UserListResponse *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &chat__user_list_response__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t chat__user_list_response__pack_to_buffer
+                     (const Chat__UserListResponse *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &chat__user_list_response__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Chat__UserListResponse *
+       chat__user_list_response__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Chat__UserListResponse *)
+     protobuf_c_message_unpack (&chat__user_list_response__descriptor,
+                                allocator, len, data);
+}
+void   chat__user_list_response__free_unpacked
+                     (Chat__UserListResponse *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &chat__user_list_response__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   chat__update_status_request__init
+                     (Chat__UpdateStatusRequest         *message)
+{
+  static const Chat__UpdateStatusRequest init_value = CHAT__UPDATE_STATUS_REQUEST__INIT;
+  *message = init_value;
+}
+size_t chat__update_status_request__get_packed_size
+                     (const Chat__UpdateStatusRequest *message)
+{
+  assert(message->base.descriptor == &chat__update_status_request__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t chat__update_status_request__pack
+                     (const Chat__UpdateStatusRequest *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &chat__update_status_request__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t chat__update_status_request__pack_to_buffer
+                     (const Chat__UpdateStatusRequest *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &chat__update_status_request__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Chat__UpdateStatusRequest *
+       chat__update_status_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Chat__UpdateStatusRequest *)
+     protobuf_c_message_unpack (&chat__update_status_request__descriptor,
+                                allocator, len, data);
+}
+void   chat__update_status_request__free_unpacked
+                     (Chat__UpdateStatusRequest *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &chat__update_status_request__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   chat__request__init
+                     (Chat__Request         *message)
+{
+  static const Chat__Request init_value = CHAT__REQUEST__INIT;
+  *message = init_value;
+}
+size_t chat__request__get_packed_size
+                     (const Chat__Request *message)
+{
+  assert(message->base.descriptor == &chat__request__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t chat__request__pack
+                     (const Chat__Request *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &chat__request__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t chat__request__pack_to_buffer
+                     (const Chat__Request *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &chat__request__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Chat__Request *
+       chat__request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Chat__Request *)
+     protobuf_c_message_unpack (&chat__request__descriptor,
+                                allocator, len, data);
+}
+void   chat__request__free_unpacked
+                     (Chat__Request *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &chat__request__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   chat__response__init
+                     (Chat__Response         *message)
+{
+  static const Chat__Response init_value = CHAT__RESPONSE__INIT;
+  *message = init_value;
+}
+size_t chat__response__get_packed_size
+                     (const Chat__Response *message)
+{
+  assert(message->base.descriptor == &chat__response__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t chat__response__pack
+                     (const Chat__Response *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &chat__response__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t chat__response__pack_to_buffer
+                     (const Chat__Response *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &chat__response__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Chat__Response *
+       chat__response__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Chat__Response *)
+     protobuf_c_message_unpack (&chat__response__descriptor,
+                                allocator, len, data);
+}
+void   chat__response__free_unpacked
+                     (Chat__Response *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &chat__response__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+static const ProtobufCFieldDescriptor chat__user__field_descriptors[2] =
 {
   {
-    "list",
+    "username",
     1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BOOL,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserList, list),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "user_name",
-    2,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Chat__UserList, user_name),
+    offsetof(Chat__User, username),
     NULL,
     &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned chat__user_list__field_indices_by_name[] = {
-  0,   /* field[0] = list */
-  1,   /* field[1] = user_name */
-};
-static const ProtobufCIntRange chat__user_list__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor chat__user_list__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.UserList",
-  "UserList",
-  "Chat__UserList",
-  "chat",
-  sizeof(Chat__UserList),
-  2,
-  chat__user_list__field_descriptors,
-  chat__user_list__field_indices_by_name,
-  1,  chat__user_list__number_ranges,
-  (ProtobufCMessageInit) chat__user_list__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor chat__users_online__field_descriptors[1] =
-{
-  {
-    "users",
-    1,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Chat__UsersOnline, n_users),
-    offsetof(Chat__UsersOnline, users),
-    &chat__user__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned chat__users_online__field_indices_by_name[] = {
-  0,   /* field[0] = users */
-};
-static const ProtobufCIntRange chat__users_online__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 1 }
-};
-const ProtobufCMessageDescriptor chat__users_online__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.UsersOnline",
-  "UsersOnline",
-  "Chat__UsersOnline",
-  "chat",
-  sizeof(Chat__UsersOnline),
-  1,
-  chat__users_online__field_descriptors,
-  chat__users_online__field_indices_by_name,
-  1,  chat__users_online__number_ranges,
-  (ProtobufCMessageInit) chat__users_online__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor chat__user_option__field_descriptors[5] =
-{
-  {
-    "op",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_INT32,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserOption, op),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "createUser",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserOption, createuser),
-    &chat__new_user__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "userList",
-    3,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserOption, userlist),
-    &chat__user_list__descriptor,
-    NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
     "status",
-    4,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserOption, status),
-    &chat__status__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "message",
-    5,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__UserOption, message),
-    &chat__message__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned chat__user_option__field_indices_by_name[] = {
-  1,   /* field[1] = createUser */
-  4,   /* field[4] = message */
-  0,   /* field[0] = op */
-  3,   /* field[3] = status */
-  2,   /* field[2] = userList */
-};
-static const ProtobufCIntRange chat__user_option__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 5 }
-};
-const ProtobufCMessageDescriptor chat__user_option__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.UserOption",
-  "UserOption",
-  "Chat__UserOption",
-  "chat",
-  sizeof(Chat__UserOption),
-  5,
-  chat__user_option__field_descriptors,
-  chat__user_option__field_indices_by_name,
-  1,  chat__user_option__number_ranges,
-  (ProtobufCMessageInit) chat__user_option__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor chat__answer__field_descriptors[7] =
-{
-  {
-    "op",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_INT32,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, op),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "response_status_code",
     2,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_INT32,
+    PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
-    offsetof(Chat__Answer, response_status_code),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "response_message",
-    3,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, response_message),
-    NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "users_online",
-    4,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, users_online),
-    &chat__users_online__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "message",
-    5,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, message),
-    &chat__message__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "user",
-    6,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, user),
-    &chat__user__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "status",
-    7,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Answer, status),
-    &chat__status__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned chat__answer__field_indices_by_name[] = {
-  4,   /* field[4] = message */
-  0,   /* field[0] = op */
-  2,   /* field[2] = response_message */
-  1,   /* field[1] = response_status_code */
-  6,   /* field[6] = status */
-  5,   /* field[5] = user */
-  3,   /* field[3] = users_online */
-};
-static const ProtobufCIntRange chat__answer__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 7 }
-};
-const ProtobufCMessageDescriptor chat__answer__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.Answer",
-  "Answer",
-  "Chat__Answer",
-  "chat",
-  sizeof(Chat__Answer),
-  7,
-  chat__answer__field_descriptors,
-  chat__answer__field_indices_by_name,
-  1,  chat__answer__number_ranges,
-  (ProtobufCMessageInit) chat__answer__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor chat__user__field_descriptors[3] =
-{
-  {
-    "user_name",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Chat__User, user_name),
-    NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "user_ip",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Chat__User, user_ip),
-    NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "user_state",
-    3,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_INT32,
-    0,   /* quantifier_offset */
-    offsetof(Chat__User, user_state),
-    NULL,
+    offsetof(Chat__User, status),
+    &chat__user_status__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
 static const unsigned chat__user__field_indices_by_name[] = {
-  1,   /* field[1] = user_ip */
-  0,   /* field[0] = user_name */
-  2,   /* field[2] = user_state */
+  1,   /* field[1] = status */
+  0,   /* field[0] = username */
 };
 static const ProtobufCIntRange chat__user__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 2 }
 };
 const ProtobufCMessageDescriptor chat__user__descriptor =
 {
@@ -719,14 +456,14 @@ const ProtobufCMessageDescriptor chat__user__descriptor =
   "Chat__User",
   "chat",
   sizeof(Chat__User),
-  3,
+  2,
   chat__user__field_descriptors,
   chat__user__field_indices_by_name,
   1,  chat__user__number_ranges,
   (ProtobufCMessageInit) chat__user__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor chat__new_user__field_descriptors[2] =
+static const ProtobufCFieldDescriptor chat__new_user_request__field_descriptors[1] =
 {
   {
     "username",
@@ -734,174 +471,635 @@ static const ProtobufCFieldDescriptor chat__new_user__field_descriptors[2] =
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Chat__NewUser, username),
-    NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "IP",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Chat__NewUser, ip),
+    offsetof(Chat__NewUserRequest, username),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned chat__new_user__field_indices_by_name[] = {
-  1,   /* field[1] = IP */
+static const unsigned chat__new_user_request__field_indices_by_name[] = {
   0,   /* field[0] = username */
 };
-static const ProtobufCIntRange chat__new_user__number_ranges[1 + 1] =
+static const ProtobufCIntRange chat__new_user_request__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 2 }
+  { 0, 1 }
 };
-const ProtobufCMessageDescriptor chat__new_user__descriptor =
+const ProtobufCMessageDescriptor chat__new_user_request__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.NewUser",
-  "NewUser",
-  "Chat__NewUser",
+  "chat.NewUserRequest",
+  "NewUserRequest",
+  "Chat__NewUserRequest",
   "chat",
-  sizeof(Chat__NewUser),
-  2,
-  chat__new_user__field_descriptors,
-  chat__new_user__field_indices_by_name,
-  1,  chat__new_user__number_ranges,
-  (ProtobufCMessageInit) chat__new_user__init,
+  sizeof(Chat__NewUserRequest),
+  1,
+  chat__new_user_request__field_descriptors,
+  chat__new_user_request__field_indices_by_name,
+  1,  chat__new_user_request__number_ranges,
+  (ProtobufCMessageInit) chat__new_user_request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor chat__status__field_descriptors[2] =
+static const ProtobufCFieldDescriptor chat__send_message_request__field_descriptors[2] =
 {
   {
-    "user_name",
+    "recipient",
     1,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Chat__Status, user_name),
+    offsetof(Chat__SendMessageRequest, recipient),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "user_state",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_INT32,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Status, user_state),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned chat__status__field_indices_by_name[] = {
-  0,   /* field[0] = user_name */
-  1,   /* field[1] = user_state */
-};
-static const ProtobufCIntRange chat__status__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor chat__status__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.Status",
-  "Status",
-  "Chat__Status",
-  "chat",
-  sizeof(Chat__Status),
-  2,
-  chat__status__field_descriptors,
-  chat__status__field_indices_by_name,
-  1,  chat__status__number_ranges,
-  (ProtobufCMessageInit) chat__status__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor chat__message__field_descriptors[4] =
-{
-  {
-    "message_private",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BOOL,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Message, message_private),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "message_destination",
+    "content",
     2,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Chat__Message, message_destination),
+    offsetof(Chat__SendMessageRequest, content),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__send_message_request__field_indices_by_name[] = {
+  1,   /* field[1] = content */
+  0,   /* field[0] = recipient */
+};
+static const ProtobufCIntRange chat__send_message_request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor chat__send_message_request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.SendMessageRequest",
+  "SendMessageRequest",
+  "Chat__SendMessageRequest",
+  "chat",
+  sizeof(Chat__SendMessageRequest),
+  2,
+  chat__send_message_request__field_descriptors,
+  chat__send_message_request__field_indices_by_name,
+  1,  chat__send_message_request__number_ranges,
+  (ProtobufCMessageInit) chat__send_message_request__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__incoming_message_response__field_descriptors[3] =
+{
+  {
+    "sender",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Chat__IncomingMessageResponse, sender),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "message_content",
+    "content",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Chat__IncomingMessageResponse, content),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "type",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__IncomingMessageResponse, type),
+    &chat__message_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__incoming_message_response__field_indices_by_name[] = {
+  1,   /* field[1] = content */
+  0,   /* field[0] = sender */
+  2,   /* field[2] = type */
+};
+static const ProtobufCIntRange chat__incoming_message_response__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor chat__incoming_message_response__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.IncomingMessageResponse",
+  "IncomingMessageResponse",
+  "Chat__IncomingMessageResponse",
+  "chat",
+  sizeof(Chat__IncomingMessageResponse),
+  3,
+  chat__incoming_message_response__field_descriptors,
+  chat__incoming_message_response__field_indices_by_name,
+  1,  chat__incoming_message_response__number_ranges,
+  (ProtobufCMessageInit) chat__incoming_message_response__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__user_list_request__field_descriptors[1] =
+{
+  {
+    "username",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Chat__UserListRequest, username),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__user_list_request__field_indices_by_name[] = {
+  0,   /* field[0] = username */
+};
+static const ProtobufCIntRange chat__user_list_request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor chat__user_list_request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.UserListRequest",
+  "UserListRequest",
+  "Chat__UserListRequest",
+  "chat",
+  sizeof(Chat__UserListRequest),
+  1,
+  chat__user_list_request__field_descriptors,
+  chat__user_list_request__field_indices_by_name,
+  1,  chat__user_list_request__number_ranges,
+  (ProtobufCMessageInit) chat__user_list_request__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__user_list_response__field_descriptors[2] =
+{
+  {
+    "users",
+    1,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__UserListResponse, n_users),
+    offsetof(Chat__UserListResponse, users),
+    &chat__user__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "type",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__UserListResponse, type),
+    &chat__user_list_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__user_list_response__field_indices_by_name[] = {
+  1,   /* field[1] = type */
+  0,   /* field[0] = users */
+};
+static const ProtobufCIntRange chat__user_list_response__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor chat__user_list_response__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.UserListResponse",
+  "UserListResponse",
+  "Chat__UserListResponse",
+  "chat",
+  sizeof(Chat__UserListResponse),
+  2,
+  chat__user_list_response__field_descriptors,
+  chat__user_list_response__field_indices_by_name,
+  1,  chat__user_list_response__number_ranges,
+  (ProtobufCMessageInit) chat__user_list_response__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__update_status_request__field_descriptors[2] =
+{
+  {
+    "username",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(Chat__UpdateStatusRequest, username),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "new_status",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__UpdateStatusRequest, new_status),
+    &chat__user_status__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__update_status_request__field_indices_by_name[] = {
+  1,   /* field[1] = new_status */
+  0,   /* field[0] = username */
+};
+static const ProtobufCIntRange chat__update_status_request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor chat__update_status_request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.UpdateStatusRequest",
+  "UpdateStatusRequest",
+  "Chat__UpdateStatusRequest",
+  "chat",
+  sizeof(Chat__UpdateStatusRequest),
+  2,
+  chat__update_status_request__field_descriptors,
+  chat__update_status_request__field_indices_by_name,
+  1,  chat__update_status_request__number_ranges,
+  (ProtobufCMessageInit) chat__update_status_request__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__request__field_descriptors[6] =
+{
+  {
+    "operation",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__Request, operation),
+    &chat__operation__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "register_user",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Request, payload_case),
+    offsetof(Chat__Request, register_user),
+    &chat__new_user_request__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "send_message",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Request, payload_case),
+    offsetof(Chat__Request, send_message),
+    &chat__send_message_request__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "update_status",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Request, payload_case),
+    offsetof(Chat__Request, update_status),
+    &chat__update_status_request__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "get_users",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Request, payload_case),
+    offsetof(Chat__Request, get_users),
+    &chat__user_list_request__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "unregister_user",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Request, payload_case),
+    offsetof(Chat__Request, unregister_user),
+    &chat__user__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned chat__request__field_indices_by_name[] = {
+  4,   /* field[4] = get_users */
+  0,   /* field[0] = operation */
+  1,   /* field[1] = register_user */
+  2,   /* field[2] = send_message */
+  5,   /* field[5] = unregister_user */
+  3,   /* field[3] = update_status */
+};
+static const ProtobufCIntRange chat__request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 6 }
+};
+const ProtobufCMessageDescriptor chat__request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "chat.Request",
+  "Request",
+  "Chat__Request",
+  "chat",
+  sizeof(Chat__Request),
+  6,
+  chat__request__field_descriptors,
+  chat__request__field_indices_by_name,
+  1,  chat__request__number_ranges,
+  (ProtobufCMessageInit) chat__request__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor chat__response__field_descriptors[5] =
+{
+  {
+    "operation",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__Response, operation),
+    &chat__operation__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "status_code",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(Chat__Response, status_code),
+    &chat__status_code__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "message",
     3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Chat__Message, message_content),
+    offsetof(Chat__Response, message),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "message_sender",
+    "user_list",
     4,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    offsetof(Chat__Message, message_sender),
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Response, result_case),
+    offsetof(Chat__Response, user_list),
+    &chat__user_list_response__descriptor,
     NULL,
-    &protobuf_c_empty_string,
-    0,             /* flags */
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "incoming_message",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Chat__Response, result_case),
+    offsetof(Chat__Response, incoming_message),
+    &chat__incoming_message_response__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned chat__message__field_indices_by_name[] = {
-  2,   /* field[2] = message_content */
-  1,   /* field[1] = message_destination */
-  0,   /* field[0] = message_private */
-  3,   /* field[3] = message_sender */
+static const unsigned chat__response__field_indices_by_name[] = {
+  4,   /* field[4] = incoming_message */
+  2,   /* field[2] = message */
+  0,   /* field[0] = operation */
+  1,   /* field[1] = status_code */
+  3,   /* field[3] = user_list */
 };
-static const ProtobufCIntRange chat__message__number_ranges[1 + 1] =
+static const ProtobufCIntRange chat__response__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
-const ProtobufCMessageDescriptor chat__message__descriptor =
+const ProtobufCMessageDescriptor chat__response__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "chat.Message",
-  "Message",
-  "Chat__Message",
+  "chat.Response",
+  "Response",
+  "Chat__Response",
   "chat",
-  sizeof(Chat__Message),
-  4,
-  chat__message__field_descriptors,
-  chat__message__field_indices_by_name,
-  1,  chat__message__number_ranges,
-  (ProtobufCMessageInit) chat__message__init,
+  sizeof(Chat__Response),
+  5,
+  chat__response__field_descriptors,
+  chat__response__field_indices_by_name,
+  1,  chat__response__number_ranges,
+  (ProtobufCMessageInit) chat__response__init,
   NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCEnumValue chat__user_status__enum_values_by_number[3] =
+{
+  { "ONLINE", "CHAT__USER_STATUS__ONLINE", 0 },
+  { "BUSY", "CHAT__USER_STATUS__BUSY", 1 },
+  { "OFFLINE", "CHAT__USER_STATUS__OFFLINE", 2 },
+};
+static const ProtobufCIntRange chat__user_status__value_ranges[] = {
+{0, 0},{0, 3}
+};
+static const ProtobufCEnumValueIndex chat__user_status__enum_values_by_name[3] =
+{
+  { "BUSY", 1 },
+  { "OFFLINE", 2 },
+  { "ONLINE", 0 },
+};
+const ProtobufCEnumDescriptor chat__user_status__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "chat.UserStatus",
+  "UserStatus",
+  "Chat__UserStatus",
+  "chat",
+  3,
+  chat__user_status__enum_values_by_number,
+  3,
+  chat__user_status__enum_values_by_name,
+  1,
+  chat__user_status__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue chat__message_type__enum_values_by_number[2] =
+{
+  { "BROADCAST", "CHAT__MESSAGE_TYPE__BROADCAST", 0 },
+  { "DIRECT", "CHAT__MESSAGE_TYPE__DIRECT", 1 },
+};
+static const ProtobufCIntRange chat__message_type__value_ranges[] = {
+{0, 0},{0, 2}
+};
+static const ProtobufCEnumValueIndex chat__message_type__enum_values_by_name[2] =
+{
+  { "BROADCAST", 0 },
+  { "DIRECT", 1 },
+};
+const ProtobufCEnumDescriptor chat__message_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "chat.MessageType",
+  "MessageType",
+  "Chat__MessageType",
+  "chat",
+  2,
+  chat__message_type__enum_values_by_number,
+  2,
+  chat__message_type__enum_values_by_name,
+  1,
+  chat__message_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue chat__user_list_type__enum_values_by_number[2] =
+{
+  { "ALL", "CHAT__USER_LIST_TYPE__ALL", 0 },
+  { "SINGLE", "CHAT__USER_LIST_TYPE__SINGLE", 1 },
+};
+static const ProtobufCIntRange chat__user_list_type__value_ranges[] = {
+{0, 0},{0, 2}
+};
+static const ProtobufCEnumValueIndex chat__user_list_type__enum_values_by_name[2] =
+{
+  { "ALL", 0 },
+  { "SINGLE", 1 },
+};
+const ProtobufCEnumDescriptor chat__user_list_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "chat.UserListType",
+  "UserListType",
+  "Chat__UserListType",
+  "chat",
+  2,
+  chat__user_list_type__enum_values_by_number,
+  2,
+  chat__user_list_type__enum_values_by_name,
+  1,
+  chat__user_list_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue chat__operation__enum_values_by_number[6] =
+{
+  { "REGISTER_USER", "CHAT__OPERATION__REGISTER_USER", 0 },
+  { "SEND_MESSAGE", "CHAT__OPERATION__SEND_MESSAGE", 1 },
+  { "UPDATE_STATUS", "CHAT__OPERATION__UPDATE_STATUS", 2 },
+  { "GET_USERS", "CHAT__OPERATION__GET_USERS", 3 },
+  { "UNREGISTER_USER", "CHAT__OPERATION__UNREGISTER_USER", 4 },
+  { "INCOMING_MESSAGE", "CHAT__OPERATION__INCOMING_MESSAGE", 5 },
+};
+static const ProtobufCIntRange chat__operation__value_ranges[] = {
+{0, 0},{0, 6}
+};
+static const ProtobufCEnumValueIndex chat__operation__enum_values_by_name[6] =
+{
+  { "GET_USERS", 3 },
+  { "INCOMING_MESSAGE", 5 },
+  { "REGISTER_USER", 0 },
+  { "SEND_MESSAGE", 1 },
+  { "UNREGISTER_USER", 4 },
+  { "UPDATE_STATUS", 2 },
+};
+const ProtobufCEnumDescriptor chat__operation__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "chat.Operation",
+  "Operation",
+  "Chat__Operation",
+  "chat",
+  6,
+  chat__operation__enum_values_by_number,
+  6,
+  chat__operation__enum_values_by_name,
+  1,
+  chat__operation__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue chat__status_code__enum_values_by_number[4] =
+{
+  { "UNKNOWN_STATUS", "CHAT__STATUS_CODE__UNKNOWN_STATUS", 0 },
+  { "OK", "CHAT__STATUS_CODE__OK", 200 },
+  { "BAD_REQUEST", "CHAT__STATUS_CODE__BAD_REQUEST", 400 },
+  { "INTERNAL_SERVER_ERROR", "CHAT__STATUS_CODE__INTERNAL_SERVER_ERROR", 500 },
+};
+static const ProtobufCIntRange chat__status_code__value_ranges[] = {
+{0, 0},{200, 1},{400, 2},{500, 3},{0, 4}
+};
+static const ProtobufCEnumValueIndex chat__status_code__enum_values_by_name[4] =
+{
+  { "BAD_REQUEST", 2 },
+  { "INTERNAL_SERVER_ERROR", 3 },
+  { "OK", 1 },
+  { "UNKNOWN_STATUS", 0 },
+};
+const ProtobufCEnumDescriptor chat__status_code__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "chat.StatusCode",
+  "StatusCode",
+  "Chat__StatusCode",
+  "chat",
+  4,
+  chat__status_code__enum_values_by_number,
+  4,
+  chat__status_code__enum_values_by_name,
+  4,
+  chat__status_code__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
 };

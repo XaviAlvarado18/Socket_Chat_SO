@@ -430,7 +430,6 @@ int main(int argc, char **argv){
 		register_user(cli);
 		pthread_create(&tid, NULL, &handle_client, (void*)cli);
 
-		// Optimizacion para que Linux no pete.
 		sleep(1);
 	}
 

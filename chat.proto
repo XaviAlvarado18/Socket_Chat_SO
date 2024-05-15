@@ -1,79 +1,104 @@
 syntax = "proto3";
 package chat;
 
-
-message UserList {
-    // verdadero = usuarios conectados
-    // falso = usuario especifico
-    bool list = 1;
-    // se manda vacio si es para todos, nombre de usuario si es especifico
-    string user_name = 2;
+// Enumeration of potential user statuses to clearly define possible states a user can have.
+// This state is not functional but represent the user's availability to receive messages.
+enum UserStatus {
+    ONLINE = 0;  // The user is online and available to receive messages.
+    BUSY = 1;    // The user is online but marked as busy, may not respond promptly.
+    OFFLINE = 2; // The user is offline and cannot receive messages.
 }
 
-message UsersOnline{
-    // Lista de usuarios
-    repeated User users = 1;
+// User represents the essential information about a chat user.
+message User {
+    string username = 1;  // Unique identifier for the user.
+    UserStatus status = 2;  // Current status of the user, indicating availability.
 }
 
-message UserOption{
-    // opcion a realizar
-    int32 op = 1;
-    // crear nuevo usuario
-    NewUser createUser = 2;
-    // ver usuarios conectados/ver estado de usuario
-    UserList userList = 3;
-    // cambiar estado de usuario
-    Status status = 4;
-    // enviar mensaje
-    Message message = 5;
+// NewUserRequest is used to register a new user on the chat server.
+message NewUserRequest {
+    string username = 1;  // Desired username for the new user. Must be unique across all users.
 }
 
-message Answer{
-    // opcion recibida
-    int32 op = 1;
-    // 400 error, 200 OK
-    int32 response_status_code = 2;
-    // Mensaje de respuesta
-    string response_message = 3;
-    // Lista de usuarios
-    UsersOnline users_online = 4;
-    // Mensaje recibido
-    Message message = 5;
-    // Usuario 
-    User user = 6;
-    // Status del usuario
-    Status status = 7;
+// MessageRequest represents a request to send a chat message.
+message SendMessageRequest {
+    string recipient = 1;  // Username of the recipient. If empty, the message is broadcast to all online users.
+    string content = 2;  // Content of the message being sent.
 }
 
-message User{
-    // Nombre de usuario
-    string user_name = 1;
-    // IP del usuario
-    string user_ip = 2;
-    // status del usuario
-    int32 user_state = 3;
+enum MessageType {
+    BROADCAST = 0;  // Message is broadcast to all online users.
+    DIRECT = 1;  // Message is sent to a specific user.
 }
 
-message NewUser {
-    // Nombre de usuario
-    string username = 1;
-    // IP del usuario
-    string IP = 2;
+message IncomingMessageResponse {
+    string sender = 1;  // Username of the user who sent the message.
+    string content = 2;  // Content of the message.
+    // Type of message
+    MessageType type = 3;
 }
 
-message Status{
-    string user_name = 1;
-    // 1 en linea, 2 ocupado, 3 desconectado
-    int32 user_state = 2;
+enum UserListType {
+    ALL = 0;  // Fetch all connected users.
+    SINGLE = 1;  // Fetch details for a single user.
 }
 
-message Message {
-    // false = se manda a todos, true = mensaje directo
-    bool message_private = 1;
-    // Vacio si es para todos, nombre de usuario si es directo
-    string message_destination = 2;
-    // Contenido del mensaje
-    string message_content = 3;
-    // Usuario que lo manda
-    string message_sender = 4;
+// UserListRequest is used to fetch a list of currently connected users.
+message UserListRequest {
+    string username = 1;  // Specific username to fetch details for. If empty, fetches all connected users.
+}
+
+// UserListResponse returns a list of users.
+message UserListResponse {
+    repeated User users = 1;  // List of users meeting the criteria specified in UserListRequest.
+    UserListType type = 2;
+}
+
+// UpdateStatusRequest is used to change the status of a user.
+message UpdateStatusRequest {
+    string username = 1;  // Username of the user whose status is to be updated.
+    UserStatus new_status = 2;  // The new status to be applied to the user.
+}
+
+enum Operation {
+    REGISTER_USER = 0;
+    SEND_MESSAGE = 1;
+    UPDATE_STATUS = 2;
+    GET_USERS = 3;
+    UNREGISTER_USER = 4;
+    INCOMING_MESSAGE = 5;
+}
+
+// Request types consolidated into a unified structure with a type indicator.
+message Request {
+    // Indicates the type of request being made.
+    Operation operation = 1;
+
+    // Different request payloads, only one of these is filled based on 'type'.
+    oneof payload {
+        NewUserRequest register_user = 2;
+        SendMessageRequest send_message = 3;
+        UpdateStatusRequest update_status = 4;
+        UserListRequest get_users = 5;
+        User unregister_user = 6;
+    }
+}
+
+enum StatusCode { 
+    UNKNOWN_STATUS = 0;              // Default value, should not be used in normal operations
+    OK = 200;                        // Request has succeeded
+    BAD_REQUEST = 400;               // Request cannot be fulfilled due to bad syntax (este podría ser el utilizado general)
+    INTERNAL_SERVER_ERROR = 500;     // A generic error message, given when no more specific message is suitable
+}
+
+
+// Response is a generalized structure used for all responses from the server.
+message Response {
+    Operation operation = 1;  // Indicates the type of operation being performed.
+    StatusCode status_code = 2;  // Status code indicating the outcome of the operation.
+    string message = 3;  // Human-readable (We XD) message providing more details about the result.
+    oneof result {
+        UserListResponse user_list = 4;  // Details specific to user list requests.
+        IncomingMessageResponse incoming_message = 5;  // Details specific to incoming chat messages.
+    }
 }
