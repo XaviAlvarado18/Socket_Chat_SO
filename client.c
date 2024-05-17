@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include "chat.pb-c.h"
 
 #define LENGTH 3000
 
@@ -64,35 +65,79 @@ void sender() {
         if (strcmp(message, "/exit") == 0) {
             printf("Saliendo...");
             break;
-        } else if (strcmp(message, "/activo") == 0){
+        }
+
+        Chat__Request request = CHAT__REQUEST__INIT;
+
+        if (strcmp(message, "/activo") == 0) {
             printf("Cambiar estado a activo\n");
-            send(sockfd, message, strlen(message), 0);
+            request.operation = CHAT__OPERATION__UPDATE_STATUS;
+            Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            update_status_request.username = name;
+            update_status_request.new_status = CHAT__USER_STATUS__ONLINE;
+            request.update_status = &update_status_request;
         } else if (strcmp(message, "/inactivo") == 0) {
             printf("Cambiar estado a inactivo\n");
-            send(sockfd, message, strlen(message), 0);
+            request.operation = CHAT__OPERATION__UPDATE_STATUS;
+            Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            update_status_request.username = name;
+            update_status_request.new_status = CHAT__USER_STATUS__OFFLINE;
+            request.update_status = &update_status_request;
         } else if (strcmp(message, "/ocupado") == 0) {
             printf("Cambiar estado a ocupado\n");
-            send(sockfd, message, strlen(message), 0);
+            request.operation = CHAT__OPERATION__UPDATE_STATUS;
+            Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            update_status_request.username = name;
+            update_status_request.new_status = CHAT__USER_STATUS__BUSY;
+            request.update_status = &update_status_request;
         } else if (strcmp(message, "/list") == 0) {
             printf("Mostrar lista de usuarios\n");
-            sprintf(buffer, "%s: %s\n", name, message);
-            send(sockfd, buffer, strlen(buffer), 0);
+            request.operation = CHAT__OPERATION__GET_USERS;
+            Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
+            user_list_request.username = "";
+            request.get_users = &user_list_request;
         } else if (strstr(message, "/priv")) { // /priv <to> <message>
             printf("Mandar mensaje privado\n");
-            send(sockfd, message, strlen(message), 0);
+            char *recipient = strtok(message + 6, " ");
+            char *content = strtok(NULL, "");
+
+            request.operation = CHAT__OPERATION__SEND_MESSAGE;
+            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
+            send_message_request.recipient = recipient;
+            send_message_request.content = content;
+            request.send_message = &send_message_request;
         } else if (strstr(message, "/info")) { // /info <user>
             printf("Buscar informacion de usuario\n");
-            send(sockfd, message, strlen(message), 0); 
+            char *user = message + 6;
+
+            request.operation = CHAT__OPERATION__GET_USERS;
+            Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
+            user_list_request.username = user;
+            request.get_users = &user_list_request;
         } else {
-            sprintf(buffer, "%s: %s\n", name, message);
-            send(sockfd, buffer, strlen(buffer), 0);
+            printf("Enviar mensaje general\n");
+            request.operation = CHAT__OPERATION__SEND_MESSAGE;
+            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
+            send_message_request.recipient = "";
+            send_message_request.content = message;
+            request.send_message = &send_message_request;
         }
+
+        // Empaquetar y enviar la solicitud
+        size_t request_size = chat__request__get_packed_size(&request);
+        uint8_t *request_buffer = malloc(request_size);
+        chat__request__pack(&request, request_buffer);
+
+        send(sockfd, request_buffer, request_size, 0);
+
+        free(request_buffer);
 
         memset(message, 0, LENGTH);
         memset(buffer, 0, LENGTH + 32);
     }
     manage_exit(2);
 }
+
 
 
 
