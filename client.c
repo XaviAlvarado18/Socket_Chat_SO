@@ -24,21 +24,33 @@ void manage_exit(int sig) {
 
 
 void receiver() {
-    char message[LENGTH] = {};
+    uint8_t message[LENGTH] = {};
     while (1) {
         int receive = recv(sockfd, message, LENGTH, 0);
         if (receive > 0) {
-            printf("%s", message);
+            Chat__Response *response = chat__response__unpack(NULL, receive, message);
+            if (response == NULL) {
+                fprintf(stderr, "Error unpacking incoming message.\n");
+                continue;
+            }
+
+            if (response->operation == CHAT__OPERATION__INCOMING_MESSAGE && response->incoming_message) {
+                Chat__IncomingMessageResponse *incoming_message = response->incoming_message;
+                printf("[%s]: %s\n", incoming_message->sender, incoming_message->content);
+            }
+
+            chat__response__free_unpacked(response, NULL);
             printf("%s", "$ ");
             fflush(stdout);
         } else if (receive == 0) {
             break;
         } else {
-
+            // Error receiving message
         }
         memset(message, 0, sizeof(message));
     }
 }
+
 
 
 void trim_newline (char* str) {
@@ -90,12 +102,18 @@ void sender() {
             update_status_request.username = name;
             update_status_request.new_status = CHAT__USER_STATUS__BUSY;
             request.update_status = &update_status_request;
-        } else if (strcmp(message, "/list") == 0) {
+        } else if (strcmp(message, "3") == 0) {
             printf("Mostrar lista de usuarios\n");
             request.operation = CHAT__OPERATION__GET_USERS;
             Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
             user_list_request.username = "";
             request.get_users = &user_list_request;
+
+            size_t request_size = chat__request__get_packed_size(&request);
+            uint8_t *request_buffer = malloc(request_size);
+            chat__request__pack(&request, request_buffer);
+            send(sockfd, request_buffer, request_size, 0);
+            free(request_buffer);
         } else if (strstr(message, "/priv")) { // /priv <to> <message>
             printf("Mandar mensaje privado\n");
             char *recipient = strtok(message + 6, " ");

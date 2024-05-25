@@ -9,13 +9,14 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
-
+#include "chat.pb-c.h"
 
 #define LIMIT_CLIENT 100
 #define MSG_LIMIT 3000
 
 static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
+#define LENGTH 3000
 
 // Estructura del cliente
 typedef struct{
@@ -98,29 +99,33 @@ void send_message(char *s, int uid){
 	pthread_mutex_unlock(&clients_mutex);
 }
 
-void send_one_message(char *msg, int uid_sender, int uid_receiver){
-	pthread_mutex_lock(&clients_mutex);
+void send_one_message(char *msg, int uid_sender, int uid_receiver) {
+    printf("Mensaje: %s\n", msg);
+    printf("UID del remitente: %d\n", uid_sender);
+    printf("UID del destinatario: %d\n", uid_receiver);
 
-	for(int i = 0; i<LIMIT_CLIENT; i++) {
-		if(clients[i]) {
-			if(clients[i]->uid == uid_receiver){
-				if(write(clients[i]->sockfd, msg, strlen(msg)) < 0){
-					perror("Error: Fallo de mensaje privado");
-					break;
-				}
-			}
-		}
-	}
+    pthread_mutex_lock(&clients_mutex);
 
-	// printf("Hello");
-	pthread_mutex_unlock(&clients_mutex);
+    for(int i = 0; i < LIMIT_CLIENT; i++) {
+        if(clients[i]) {
+            if(clients[i]->uid == uid_receiver) {
+                if(write(clients[i]->sockfd, msg, strlen(msg)) < 0) {
+                    perror("Error: Fallo de mensaje privado");
+                    break;
+                }
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&clients_mutex);
 }
+
 
 
 void send_private_msg(char *msg, char *receiver_name) {
 	pthread_mutex_lock(&clients_mutex);
 	
-
+	
 	for(int i = 0; i<LIMIT_CLIENT; i++){
 		if(clients[i]){
 			if(strcmp(clients[i]->name, receiver_name) == 0){
@@ -136,37 +141,58 @@ void send_private_msg(char *msg, char *receiver_name) {
 
 }
 
+
+
 void list_all_users(int uid) {
-	pthread_mutex_lock(&clients_mutex);
+    pthread_mutex_lock(&clients_mutex);
 
-	char list_users[MSG_LIMIT] = {};
+    Chat__UserListResponse response = CHAT__USER_LIST_RESPONSE__INIT;
+    response.users = malloc(LIMIT_CLIENT * sizeof(Chat__User*));
+    response.n_users = 0;
+    response.type = CHAT__USER_LIST_TYPE__ALL;
 
-	strcat(list_users, "\nUsuarios|Estado\n");
+	printf("Sigue\n");
+    for (int i = 0; i < LIMIT_CLIENT; ++i) {
+        if (clients[i] && clients[i]->uid != uid) {
+            Chat__User *user = malloc(sizeof(Chat__User));
+            *user = (Chat__User) CHAT__USER__INIT;
+            user->username = strdup(clients[i]->name);
+            user->status = clients[i]->state;
 
-	char buffer_state[12];
+            response.users[response.n_users++] = user;
+        }
+    }
+	printf("response.users: %s\n", response);
 
-	for(int i = 0; i<LIMIT_CLIENT; ++i){
-		if(clients[i]) {
-			if(clients[i] -> uid != uid) {
-				strcat(list_users, clients[i] -> name);
-				strcat(list_users, "|");
-				sprintf(buffer_state, "%d", clients[i]->state);
-				if (strcmp(buffer_state, "0") == 0){//activo
-					strcat(list_users, "activo");
-				} else if (strcmp(buffer_state, "1") == 0){ //ocupado
-					strcat(list_users, "ocupado");
-				} else if (strcmp(buffer_state, "2") == 0) { //inactivo
-					strcat(list_users, "inactivo");
-				}
-				// strcat(list_users, buffer_state);
-				strcat(list_users, "\n");
-			}
-		}
-	}
+	printf("Sigue2\n");
+    Chat__Response server_response = CHAT__RESPONSE__INIT;
+    server_response.operation = CHAT__OPERATION__GET_USERS;
+    server_response.status_code = CHAT__STATUS_CODE__OK;
+    server_response.user_list = &response;
+    server_response.result_case = CHAT__RESPONSE__RESULT_USER_LIST;
 
-	pthread_mutex_unlock(&clients_mutex);
-	send_one_message(list_users, uid, uid);
+	//printf("&server_response: %s\n", server_response.user_list);
+
+    size_t response_size = chat__response__get_packed_size(&server_response);
+    uint8_t *response_buffer = malloc(response_size);
+    chat__response__pack(&server_response, response_buffer);
+
+	printf("response_buffer: %s\n", response_buffer);
+    send_one_message(response_buffer, response_size, uid);
+
+    free(response_buffer);
+    for (size_t i = 0; i < response.n_users; ++i) {
+        free(response.users[i]->username);
+        free(response.users[i]);
+    }
+    free(response.users);
+
+    pthread_mutex_unlock(&clients_mutex);
 }
+
+
+
+
 
 void info_user(char *receiver, int uid){
 	pthread_mutex_lock(&clients_mutex);
@@ -209,158 +235,99 @@ void info_user(char *receiver, int uid){
 	send_one_message(list_users, uid, uid);
 }
 
-// Manejo de la comunicacion con el cliente
-void *handle_client(void *arg){
-	char buff_out[MSG_LIMIT];
-	char name[32];
-	int leave_flag = 0;
 
-	cli_count++;
-	client_obj *cli = (client_obj *)arg;
+void handle_get_users_request(client_obj *cli, Chat__UserListRequest *request) {
+	printf("Entra\n");
+    list_all_users(cli->uid);
+}
 
-	// Name
-	if(recv(cli->sockfd, name, 32, 0) <= 0 || strlen(name) <  2 || strlen(name) >= 32-1){
-		printf("Nombre invalido.\n");
-		leave_flag = 1;
-	} else{
 
-		for(int i = 0; i<LIMIT_CLIENT; ++i){
-			if(clients[i]) {
-				if(strcmp(clients[i] -> name, name) == 0) {
-					printf("Usuario ya en uso\n");
-					leave_flag = 1;
+//Manejo de comunicacion con el cliente
+void *handle_client(void *arg) {
+    char name[32];
+    int leave_flag = 0;
+
+    cli_count++;
+    client_obj *cli = (client_obj *)arg;
+
+    // Name
+    if (recv(cli->sockfd, name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1) {
+        printf("Nombre invalido.\n");
+        leave_flag = 1;
+    } else {
+        for (int i = 0; i < LIMIT_CLIENT; ++i) {
+            if (clients[i]) {
+                if (strcmp(clients[i]->name, name) == 0) {
+                    printf("Usuario ya en uso\n");
+                    leave_flag = 1;
+                }
+            }
+        }
+        if (leave_flag == 0) {
+            strcpy(cli->name, name);
+            char buff_out[MSG_LIMIT];
+            sprintf(buff_out, "%s se ha unido!\n", cli->name);
+            printf("%s", buff_out);
+            send_message(buff_out, cli->uid);
+        }
+    }
+
+    uint8_t buffer[LENGTH];
+
+    while (1) {
+        if (leave_flag) {
+            break;
+        }
+
+        int receive = recv(cli->sockfd, buffer, LENGTH, 0);
+        if (receive > 0) {
+            Chat__Request *request = chat__request__unpack(NULL, receive, buffer);
+            if (request == NULL) {
+                fprintf(stderr, "Error unpacking request.\n");
+                continue;
+            }
+
+			//printf("Tamaño de request->operation: %zu bytes\n", sizeof(request->operation));
+			//printf("Tamaño de CHAT__OPERATION__GET_USERS: %zu bytes\n", sizeof(CHAT__OPERATION__GET_USERS));
+
+				switch (request->operation) {
+					case CHAT__OPERATION__GET_USERS:
+						handle_get_users_request(cli, request->get_users);
+						break;
+					//case CHAT__OPERATION__SEND_MESSAGE:
+					//	handle_send_message_request(cli, request->send_message);
+					//	break;
+					//case CHAT__OPERATION__UPDATE_STATUS:
+					//	handle_update_status_request(cli, request->update_status);
+					//	break;
+					// Añade más operaciones aquí
+					default:
+						fprintf(stderr, "Unknown operation.\n");
+						break;
 				}
-			}
-		}
-		if (leave_flag == 0) {
-			strcpy(cli->name, name);
-			sprintf(buff_out, "%s se ha unido!\n", cli->name);
-			printf("%s", buff_out);
-			send_message(buff_out, cli->uid);
-		}
-	}
 
-	bzero(buff_out, MSG_LIMIT);
+            chat__request__free_unpacked(request, NULL);
+        } else if (receive == 0 || (receive > 0 && strcmp((char *)buffer, "/exit") == 0)) {
+            sprintf(buffer, "%s se ha pirado.\n", cli->name);
+            printf("%s", buffer);
+            send_message((char *)buffer, cli->uid);
+            leave_flag = 1;
+        } else {
+            printf("ERROR: -1\n");
+            leave_flag = 1;
+        }
 
-	while(1){
-		if (leave_flag) {
-			break;
-		}
-		int receive = recv(cli->sockfd, buff_out, MSG_LIMIT, 0);
-		if (receive > 0){
-				if (strstr(buff_out, "/list")){ // Comando de list recibido
-					printf("\nSe mostrara la lista\n");
-					list_all_users(cli->uid);
-				} else if (strstr(buff_out, "/priv")){ //Comando de mensaje privado
-					printf("\nSe enviara un mensaje privado\n");
-					char buffer_string[MSG_LIMIT + 32];					
+        memset(buffer, 0, LENGTH);
+    }
 
-					char *token = strtok(buff_out, " ");
-					while (token != NULL){
-						if (strcmp(token, "/priv") !=0) {
-							strcat(buffer_string, token);
-							strcat(buffer_string, " ");
-						}
-						token = strtok(NULL , " ");
-					}
-					strcat(buffer_string, ". De: ");
-					strcat(buffer_string, cli->name);
-					strcat(buffer_string, " \n");
-					trim_newline(buffer_string);
+    // Liberar usuario y thread
+    close(cli->sockfd);
+    free_user(cli->uid);
+    free(cli);
+    cli_count--;
+    pthread_detach(pthread_self());
 
-					char *space_pos = strchr(buffer_string, ' ');
-					char *receiver = "";
-					char *message_buffer = "";
-
-
-					if(space_pos != NULL) {
-						*space_pos = '\0';
-						receiver = buffer_string;
-						message_buffer = space_pos + 1;
-					}
-
-					printf("destinatario: %s\n", receiver);
-					printf("mensaje: %s\n", message_buffer);
-					strcat(message_buffer, "\n");
-
-					send_private_msg(message_buffer, receiver);
-
-
-					//clearing buffer_string
-					memset(buffer_string, '\0', sizeof(buffer_string));
-
-
-				} else if (strstr(buff_out, "/activo")){ //Comando de mensaje activo
-					printf("\nSe cambia a activo\n");
-					cli->state=0;
-				
-				} else if (strstr(buff_out, "/ocupado")){ //Comando de mensaje ocupado
-					printf("\nSe cambia a ocupado\n");
-					cli->state=1;
-				
-				} else if (strstr(buff_out, "/inactivo")){ //Comando de mensaje inactivo
-					printf("\nSe cambia a inactivo\n");
-					cli->state=2;
-				
-				} else if (strstr(buff_out, "/info")){ //Comando de mensaje info
-					printf("\nSe busca info de usuario\n");
-					char buffer_string[MSG_LIMIT + 32];					
-
-					char *token = strtok(buff_out, " ");
-					while (token != NULL){
-						if (strcmp(token, "/info") !=0) {
-							strcat(buffer_string, token);
-							strcat(buffer_string, " ");
-						}
-						token = strtok(NULL , " ");
-					}
-
-					trim_newline(buffer_string);
-					char *space_pos = strchr(buffer_string, ' ');
-					char *receiver = "";
-					char *message_buffer = "";
-
-
-					if(space_pos != NULL) {
-						*space_pos = '\0';
-						receiver = buffer_string;
-						message_buffer = space_pos + 1;
-					}
-
-					info_user(receiver, cli->uid);
-
-					memset(buffer_string, '\0', sizeof(buffer_string));
-					
-					
-				
-				} else { //Mensaje publico
-					send_message(buff_out, cli->uid);
-					trim_newline(buff_out);
-					printf("%s -> %s\n", buff_out, cli->name);
-					printf(buff_out);
-				} 
-
-		} else if (receive == 0 || strcmp(buff_out, "/exit") == 0){
-			sprintf(buff_out, "%s se ha pirado.\n", cli->name);
-			printf("%s", buff_out);
-			send_message(buff_out, cli->uid);
-			leave_flag = 1;
-		} else {
-			printf("ERROR: -1\n");
-			leave_flag = 1;
-		}
-
-		bzero(buff_out, MSG_LIMIT);
-	}
-
-  	// Liberar usuario y thread
-	close(cli->sockfd);
-	free_user(cli->uid);
-	free(cli);
-	cli_count--;
-	pthread_detach(pthread_self());
-
-	return NULL;
+    return NULL;
 }
 
 int main(int argc, char **argv){
