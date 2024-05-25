@@ -99,26 +99,48 @@ void send_message(char *s, int uid){
 	pthread_mutex_unlock(&clients_mutex);
 }
 
-void send_one_message(char *msg, int uid_sender, int uid_receiver) {
-    printf("Mensaje: %s\n", msg);
-    printf("UID del remitente: %d\n", uid_sender);
-    printf("UID del destinatario: %d\n", uid_receiver);
 
+
+void send_one_message(char *msg, int uid_sender, int uid_receiver) {
     pthread_mutex_lock(&clients_mutex);
 
-    for(int i = 0; i < LIMIT_CLIENT; i++) {
-        if(clients[i]) {
-            if(clients[i]->uid == uid_receiver) {
-                if(write(clients[i]->sockfd, msg, strlen(msg)) < 0) {
-                    perror("Error: Fallo de mensaje privado");
-                    break;
-                }
+    for (int i = 0; i < LIMIT_CLIENT; i++) {
+        if (clients[i] && clients[i]->uid == uid_receiver) {
+            printf("Sigue\n");
+            Chat__Response server_response = CHAT__RESPONSE__INIT;
+            server_response.operation = CHAT__OPERATION__INCOMING_MESSAGE;
+            server_response.status_code = CHAT__STATUS_CODE__OK;
+
+            // Create and populate the incoming message response
+            Chat__IncomingMessageResponse incoming_message = CHAT__INCOMING_MESSAGE_RESPONSE__INIT;
+            incoming_message.sender = "SERVER";  // You can set the sender as desired
+            incoming_message.content = msg;
+
+            // Assign the incoming message to the response
+            server_response.incoming_message = &incoming_message;
+            server_response.result_case = CHAT__RESPONSE__RESULT_INCOMING_MESSAGE;
+
+            // Pack the response into a buffer
+            size_t response_size = chat__response__get_packed_size(&server_response);
+            uint8_t *response_buffer = malloc(response_size);
+            chat__response__pack(&server_response, response_buffer);
+
+            // Send the response buffer to the client
+            if (write(clients[i]->sockfd, response_buffer, response_size) < 0) {
+                perror("Error: Fallo de mensaje privado");
+                break;
             }
+
+            free(response_buffer);  // Free the response buffer after sending
+
+            // Exit the loop after sending the message to the intended recipient
+            break;
         }
     }
 
     pthread_mutex_unlock(&clients_mutex);
 }
+
 
 
 
@@ -144,6 +166,7 @@ void send_private_msg(char *msg, char *receiver_name) {
 
 
 void list_all_users(int uid) {
+	//printf("uid2: %d\n", uid);
     pthread_mutex_lock(&clients_mutex);
 
     Chat__UserListResponse response = CHAT__USER_LIST_RESPONSE__INIT;
@@ -151,33 +174,33 @@ void list_all_users(int uid) {
     response.n_users = 0;
     response.type = CHAT__USER_LIST_TYPE__ALL;
 
-	printf("Sigue\n");
     for (int i = 0; i < LIMIT_CLIENT; ++i) {
         if (clients[i] && clients[i]->uid != uid) {
+			printf("uid2: %d\n", uid);
             Chat__User *user = malloc(sizeof(Chat__User));
             *user = (Chat__User) CHAT__USER__INIT;
             user->username = strdup(clients[i]->name);
             user->status = clients[i]->state;
 
+            // Print the user information for debugging
+            printf("User: %s | Status: %d\n", user->username, user->status);
+
             response.users[response.n_users++] = user;
         }
     }
-	printf("response.users: %s\n", response);
 
-	printf("Sigue2\n");
+    printf("Sigue2\n");
     Chat__Response server_response = CHAT__RESPONSE__INIT;
     server_response.operation = CHAT__OPERATION__GET_USERS;
     server_response.status_code = CHAT__STATUS_CODE__OK;
     server_response.user_list = &response;
     server_response.result_case = CHAT__RESPONSE__RESULT_USER_LIST;
 
-	//printf("&server_response: %s\n", server_response.user_list);
-
     size_t response_size = chat__response__get_packed_size(&server_response);
     uint8_t *response_buffer = malloc(response_size);
     chat__response__pack(&server_response, response_buffer);
 
-	printf("response_buffer: %s\n", response_buffer);
+
     send_one_message(response_buffer, response_size, uid);
 
     free(response_buffer);
@@ -238,6 +261,7 @@ void info_user(char *receiver, int uid){
 
 void handle_get_users_request(client_obj *cli, Chat__UserListRequest *request) {
 	printf("Entra\n");
+	printf("uid: %d\n", cli->uid);
     list_all_users(cli->uid);
 }
 
