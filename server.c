@@ -11,7 +11,7 @@
 #include <signal.h>
 #include "chat.pb-c.h"
 
-#define LIMIT_CLIENT 100
+#define LIMIT_CLIENT 10
 #define MSG_LIMIT 3000
 
 static _Atomic unsigned int cli_count = 0;
@@ -102,7 +102,9 @@ void send_message(char *s, int uid){
 
 
 void send_one_message(char *msg, int uid_sender, int uid_receiver) {
-    pthread_mutex_lock(&clients_mutex);
+
+
+    printf("Entra a send_one_message\n");
 
     for (int i = 0; i < LIMIT_CLIENT; i++) {
         if (clients[i] && clients[i]->uid == uid_receiver) {
@@ -113,12 +115,14 @@ void send_one_message(char *msg, int uid_sender, int uid_receiver) {
 
             // Create and populate the incoming message response
             Chat__IncomingMessageResponse incoming_message = CHAT__INCOMING_MESSAGE_RESPONSE__INIT;
-            incoming_message.sender = "SERVER";  // You can set the sender as desired
-            incoming_message.content = msg;
+            incoming_message.sender = strdup("SERVER");  // You can set the sender as desired
+            incoming_message.content = strdup(msg);
 
             // Assign the incoming message to the response
             server_response.incoming_message = &incoming_message;
             server_response.result_case = CHAT__RESPONSE__RESULT_INCOMING_MESSAGE;
+
+            printf("Paso chavales\n");
 
             // Pack the response into a buffer
             size_t response_size = chat__response__get_packed_size(&server_response);
@@ -128,6 +132,7 @@ void send_one_message(char *msg, int uid_sender, int uid_receiver) {
             // Send the response buffer to the client
             if (write(clients[i]->sockfd, response_buffer, response_size) < 0) {
                 perror("Error: Fallo de mensaje privado");
+                free(response_buffer);  // Free the response buffer in case of error
                 break;
             }
 
@@ -138,7 +143,8 @@ void send_one_message(char *msg, int uid_sender, int uid_receiver) {
         }
     }
 
-    pthread_mutex_unlock(&clients_mutex);
+    // Ensure the mutex is unlocked even in case of errors
+
 }
 
 
@@ -165,31 +171,59 @@ void send_private_msg(char *msg, char *receiver_name) {
 
 
 
+
 void list_all_users(int uid) {
-	//printf("uid2: %d\n", uid);
+    printf("Entra en list_all_users\n");
     pthread_mutex_lock(&clients_mutex);
+    printf("Mutex bloqueado\n");
 
     Chat__UserListResponse response = CHAT__USER_LIST_RESPONSE__INIT;
     response.users = malloc(LIMIT_CLIENT * sizeof(Chat__User*));
     response.n_users = 0;
     response.type = CHAT__USER_LIST_TYPE__ALL;
 
+    printf("LIMIT_CLIENT: %d\n", LIMIT_CLIENT);
     for (int i = 0; i < LIMIT_CLIENT; ++i) {
-        if (clients[i] && clients[i]->uid != uid) {
-			printf("uid2: %d\n", uid);
-            Chat__User *user = malloc(sizeof(Chat__User));
-            *user = (Chat__User) CHAT__USER__INIT;
-            user->username = strdup(clients[i]->name);
-            user->status = clients[i]->state;
+        if (clients[i]) {
+            printf("Cliente UID: %d\n", clients[i]->uid);
+            //printf("Cliente Name: %s\n", clients[i]->name);
+            //printf("Cliente State: %d\n", clients[i]->state);
+            printf("Cliente Socket FD: %d\n", clients[i]->sockfd);
 
-            // Print the user information for debugging
-            printf("User: %s | Status: %d\n", user->username, user->status);
+            if (clients[i]->uid != uid) {
+                printf("Procesando usuario con uid: %d\n", clients[i]->uid);
+                Chat__User *user = malloc(sizeof(Chat__User));
+                *user = (Chat__User) CHAT__USER__INIT;
+                user->username = strdup(clients[i]->name);
+                user->status = clients[i]->state;
 
-            response.users[response.n_users++] = user;
+                // Print the user information for debugging
+                printf("User: %s | Status: %d\n", user->username, user->status);
+
+                response.users[response.n_users++] = user;
+            }
+        } else {
+            printf("Cliente es NULL\n");
         }
     }
 
-    printf("Sigue2\n");
+    // Convertir la lista de usuarios a una cadena de caracteres
+    size_t list_length = 0;
+    for (int i = 0; i < response.n_users; ++i) {
+        list_length += strlen(response.users[i]->username) + 1; // +1 para el separador
+    }
+
+    // Asegurarse de incluir espacio para el carácter nulo terminador
+    list_length++; 
+
+    char *user_list_str = malloc(list_length);
+    strcpy(user_list_str, "");
+    for (int i = 0; i < response.n_users; ++i) {
+        strcat(user_list_str, response.users[i]->username);
+        strcat(user_list_str, ",");
+    }
+
+    printf("Preparando respuesta\n");
     Chat__Response server_response = CHAT__RESPONSE__INIT;
     server_response.operation = CHAT__OPERATION__GET_USERS;
     server_response.status_code = CHAT__STATUS_CODE__OK;
@@ -200,19 +234,23 @@ void list_all_users(int uid) {
     uint8_t *response_buffer = malloc(response_size);
     chat__response__pack(&server_response, response_buffer);
 
+    printf("Enviando respuesta\n");
+    // Enviar la lista de usuarios a través de send_one_message
+    send_one_message(user_list_str, strlen(user_list_str), uid);
 
-    send_one_message(response_buffer, response_size, uid);
+    // Liberar la memoria asignada para la cadena de usuarios
+    free(user_list_str);
 
-    free(response_buffer);
     for (size_t i = 0; i < response.n_users; ++i) {
         free(response.users[i]->username);
         free(response.users[i]);
     }
     free(response.users);
 
+    printf("Desbloqueando mutex\n");
     pthread_mutex_unlock(&clients_mutex);
+    printf("Mutex desbloqueado\n");
 }
-
 
 
 
@@ -260,19 +298,23 @@ void info_user(char *receiver, int uid){
 
 
 void handle_get_users_request(client_obj *cli, Chat__UserListRequest *request) {
-	printf("Entra\n");
-	printf("uid: %d\n", cli->uid);
+    printf("Entra en handle_get_users_request\n");
+    printf("uid: %d\n", cli->uid);
     list_all_users(cli->uid);
 }
 
+static int uid_counter = 10;
 
 //Manejo de comunicacion con el cliente
 void *handle_client(void *arg) {
     char name[32];
     int leave_flag = 0;
 
-    cli_count++;
     client_obj *cli = (client_obj *)arg;
+
+    // Asignar un UID único al cliente
+    cli->uid = uid_counter++;
+    printf("Nuevo cliente conectado con UID: %d\n", cli->uid);
 
     // Name
     if (recv(cli->sockfd, name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1) {

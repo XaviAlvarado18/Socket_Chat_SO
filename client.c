@@ -28,18 +28,42 @@ void receiver() {
     while (1) {
         int receive = recv(sockfd, message, LENGTH, 0);
         if (receive > 0) {
+            // Intenta desempaquetar como un mensaje Protobuf
             Chat__Response *response = chat__response__unpack(NULL, receive, message);
             if (response == NULL) {
-                fprintf(stderr, "Error unpacking incoming message.\n");
-                continue;
-            }
+                // Si falla el desempaquetado, asume que es un mensaje de texto sin procesar
+                message[receive] = '\0';  // Asegúrate de que el mensaje esté null-terminated
+                printf("%s\n", message);
+            } else {
+                // Maneja el mensaje Protobuf
+                if (response->operation == CHAT__OPERATION__INCOMING_MESSAGE && response->incoming_message) {
+                    Chat__IncomingMessageResponse *incoming_message = response->incoming_message;
+                    printf("[%s]: %s\n", incoming_message->sender, incoming_message->content);
+                } else if (response->operation == CHAT__OPERATION__GET_USERS && response->user_list) {
+                    printf("Usuarios|Estado\n");
+                    for (size_t i = 0; i < response->user_list->n_users; i++) {
+                        Chat__User *user = response->user_list->users[i];
+                        const char *status;
+                        switch (user->status) {
+                            case 0:
+                                status = "activo";
+                                break;
+                            case 1:
+                                status = "ocupado";
+                                break;
+                            case 2:
+                                status = "inactivo";
+                                break;
+                            default:
+                                status = "desconocido";
+                                break;
+                        }
+                        printf("%s|%s\n", user->username, status);
+                    }
+                }
 
-            if (response->operation == CHAT__OPERATION__INCOMING_MESSAGE && response->incoming_message) {
-                Chat__IncomingMessageResponse *incoming_message = response->incoming_message;
-                printf("[%s]: %s\n", incoming_message->sender, incoming_message->content);
+                chat__response__free_unpacked(response, NULL);
             }
-
-            chat__response__free_unpacked(response, NULL);
             printf("%s", "$ ");
             fflush(stdout);
         } else if (receive == 0) {
@@ -50,6 +74,9 @@ void receiver() {
         memset(message, 0, sizeof(message));
     }
 }
+
+
+
 
 
 
