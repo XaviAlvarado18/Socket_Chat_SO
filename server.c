@@ -454,7 +454,12 @@ void *handle_client(void *arg) {
 					memset(buffer_string, '\0', sizeof(buffer_string));
 
 
-				}
+				}else { //Mensaje publico
+					send_message(buff_out, cli->uid);
+					trim_newline(buff_out);
+					printf("%s -> %s\n", buff_out, cli->name);
+					printf(buff_out);
+				} 
         }
 
             int receive = recv(cli->sockfd, buffer, LENGTH, 0);
