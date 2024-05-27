@@ -129,7 +129,7 @@ void sender() {
             update_status_request.username = name;
             update_status_request.new_status = CHAT__USER_STATUS__BUSY;
             request.update_status = &update_status_request;
-        } else if (strcmp(message, "3") == 0) {
+        } else if (strcmp(message, "/list") == 0) {
             printf("Mostrar lista de usuarios\n");
             request.operation = CHAT__OPERATION__GET_USERS;
             Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
@@ -141,16 +141,10 @@ void sender() {
             chat__request__pack(&request, request_buffer);
             send(sockfd, request_buffer, request_size, 0);
             free(request_buffer);
-        } else if (strstr(message, "/priv")) { // /priv <to> <message>
+        } else if (strncmp(message, "/priv ", 6) == 0) { // /priv <to> <message>
             printf("Mandar mensaje privado\n");
-            char *recipient = strtok(message + 6, " ");
-            char *content = strtok(NULL, "");
+		    send(sockfd, message, strlen(message), 0);
 
-            request.operation = CHAT__OPERATION__SEND_MESSAGE;
-            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
-            send_message_request.recipient = recipient;
-            send_message_request.content = content;
-            request.send_message = &send_message_request;
         } else if (strstr(message, "/info")) { // /info <user>
             printf("Buscar informacion de usuario\n");
             char *user = message + 6;
@@ -161,11 +155,8 @@ void sender() {
             request.get_users = &user_list_request;
         } else {
             printf("Enviar mensaje general\n");
-            request.operation = CHAT__OPERATION__SEND_MESSAGE;
-            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
-            send_message_request.recipient = "";
-            send_message_request.content = message;
-            request.send_message = &send_message_request;
+            sprintf(buffer, "%s: %s\n", name, message);
+            send(sockfd, buffer, strlen(buffer), 0);
         }
 
         // Empaquetar y enviar la solicitud
