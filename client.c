@@ -147,12 +147,7 @@ void sender() {
 
         } else if (strstr(message, "/info")) { // /info <user>
             printf("Buscar informacion de usuario\n");
-            char *user = message + 6;
-
-            request.operation = CHAT__OPERATION__GET_USERS;
-            Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
-            user_list_request.username = user;
-            request.get_users = &user_list_request;
+		    send(sockfd, message, strlen(message), 0); 
         } else {
             printf("Enviar mensaje general\n");
             sprintf(buffer, "%s: %s\n", name, message);
