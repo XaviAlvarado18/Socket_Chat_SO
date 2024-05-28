@@ -247,9 +247,9 @@ void list_all_users(int uid) {
     }
     free(response.users);
 
-    printf("Desbloqueando mutex\n");
+    //printf("Desbloqueando mutex\n");
     pthread_mutex_unlock(&clients_mutex);
-    printf("Mutex desbloqueado\n");
+    //printf("Mutex desbloqueado\n");
 }
 
 
@@ -336,6 +336,45 @@ void handle_send_message_request(client_obj *cli, Chat__SendMessageRequest *requ
     send_private_msg(message, receiver_name);
 }
 
+void send_message2(const char *message_content, int uid) {
+    // Crear la solicitud de mensaje usando Protobuf
+    Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
+    send_message_request.recipient = NULL;  // Mensaje de difusión
+    send_message_request.content = (char *)message_content;
+
+    // Empaquetar la solicitud
+    size_t response_size = chat__send_message_request__get_packed_size(&send_message_request);
+    uint8_t *response_buffer = malloc(response_size);
+    if (response_buffer == NULL) {
+        fprintf(stderr, "Error: No se pudo asignar memoria para el buffer de respuesta.\n");
+        return;
+    }
+    chat__send_message_request__pack(&send_message_request, response_buffer);
+
+    // Verificar el contenido del buffer antes de enviar
+    printf("Empaquetado %zu bytes. Contenido del buffer: %s\n", response_size, message_content);
+
+    // Enviar el mensaje a todos los clientes excepto al remitente
+    pthread_mutex_lock(&clients_mutex);
+
+    for (int i = 0; i < LIMIT_CLIENT; i++) {
+        if (clients[i] && clients[i]->uid != uid) {
+            if (write(clients[i]->sockfd, response_buffer, response_size) < 0) {
+                perror("ERROR: escritura fallida");
+                break;
+            } else {
+                printf("Mensaje enviado a cliente %d (UID: %d)\n", i, clients[i]->uid);
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&clients_mutex);
+
+    // Liberar memoria
+    free(response_buffer);
+}
+
+
 
 
 static int uid_counter = 10;
@@ -381,87 +420,6 @@ void *handle_client(void *arg) {
             break;
         }
 
-        int receive1 = recv(cli->sockfd, buff_out, LENGTH, 0);
-        if (receive1 > 0) {
-        
-            
-            if (strstr(buff_out, "/info")){ //Comando de mensaje info
-					printf("\nSe busca info de usuario\n");
-					char buffer_string[MSG_LIMIT + 32];					
-
-					char *token = strtok(buff_out, " ");
-					while (token != NULL){
-						if (strcmp(token, "/info") !=0) {
-							strcat(buffer_string, token);
-							strcat(buffer_string, " ");
-						}
-						token = strtok(NULL , " ");
-					}
-
-					trim_newline(buffer_string);
-					char *space_pos = strchr(buffer_string, ' ');
-					char *receiver = "";
-					char *message_buffer = "";
-
-
-					if(space_pos != NULL) {
-						*space_pos = '\0';
-						receiver = buffer_string;
-						message_buffer = space_pos + 1;
-					}
-
-					info_user(receiver, cli->uid);
-
-					memset(buffer_string, '\0', sizeof(buffer_string));
-					
-		
-				}else if (strstr(buff_out, "/priv")){ //Comando de mensaje privado
-					printf("\nSe enviara un mensaje privado\n");
-					char buffer_string[MSG_LIMIT + 32];					
-
-					char *token = strtok(buff_out, " ");
-					while (token != NULL){
-						if (strcmp(token, "/priv") !=0) {
-							strcat(buffer_string, token);
-							strcat(buffer_string, " ");
-						}
-						token = strtok(NULL , " ");
-					}
-					strcat(buffer_string, ". De: ");
-					strcat(buffer_string, cli->name);
-					strcat(buffer_string, " \n");
-					trim_newline(buffer_string);
-
-					char *space_pos = strchr(buffer_string, ' ');
-					char *receiver = "";
-					char *message_buffer = "";
-
-
-					if(space_pos != NULL) {
-						*space_pos = '\0';
-						receiver = buffer_string;
-						message_buffer = space_pos + 1;
-					}
-
-					printf("destinatario: %s\n", receiver);
-					printf("mensaje: %s\n", message_buffer);
-					strcat(message_buffer, "\n");
-
-					send_private_msg(message_buffer, receiver);
-
-
-					//clearing buffer_string
-					memset(buffer_string, '\0', sizeof(buffer_string));
-
-
-				}else { //Mensaje publico
-					send_message(buff_out, cli->uid);
-					trim_newline(buff_out);
-					printf("%s -> %s\n", buff_out, cli->name);
-					printf(buff_out);
-				} 
-        }
-
             int receive = recv(cli->sockfd, buffer, LENGTH, 0);
             if (receive > 0) {
 
@@ -475,46 +433,87 @@ void *handle_client(void *arg) {
 
 				switch (request->operation) {
 					case CHAT__OPERATION__GET_USERS:
-						handle_get_users_request(cli, request->get_users);
+                        if (request->get_users == NULL || strlen(request->get_users->username) == 0){
+						    handle_get_users_request(cli, request->get_users);
+                        }else {
+                            printf("\nUsuario a buscar: %s\n", request->get_users->username);
+                            char buffer_string[MSG_LIMIT + 32];					
+
+                            char *token = strtok(request->get_users->username, " ");
+                            while (token != NULL){
+                                if (strcmp(token, "/info") !=0) {
+                                    strcat(buffer_string, token);
+                                    strcat(buffer_string, " ");
+                                }
+                                token = strtok(NULL , " ");
+                            }
+
+                            trim_newline(buffer_string);
+                            char *space_pos = strchr(buffer_string, ' ');
+                            char *receiver = "";
+                            char *message_buffer = "";
+
+
+                            if(space_pos != NULL) {
+                                *space_pos = '\0';
+                                receiver = buffer_string;
+                                message_buffer = space_pos + 1;
+                            }
+
+                            printf("destinatario: %s\n", receiver);
+                            printf("message_buffer: %s\n", message_buffer);
+
+                            info_user(receiver, cli->uid);
+
+                            memset(buffer_string, '\0', sizeof(buffer_string));
+                        }
 						break;
 					case CHAT__OPERATION__SEND_MESSAGE:
-                        // Depuración: Verificar contenido del request antes de llamar a la función
-                        printf("\nSe enviara un mensaje privado\n");
-                        char buffer_string[MSG_LIMIT + 32];					
+                        if (request->send_message == NULL) {
+                            fprintf(stderr, "Error: send_message es NULL\n");
+                            break;
+                        }
+                        printf("Recibido mensaje general\n");
+                        if (request->send_message->recipient == NULL || strlen(request->send_message->recipient) == 0) {
+                            printf("Enviar mensaje general: %s\n", request->send_message->content);
+                            send_message2(request->send_message->content, cli->uid);
+                        } else {
+                            // Enviar mensaje privado
+                            printf("Enviar mensaje privado a %s: %s\n", cli->name, request->send_message->content);
 
-                        char *token = strtok(buff_out, " ");
-                        while (token != NULL){
-                            if (strcmp(token, "/priv") !=0) {
-                                strcat(buffer_string, token);
-                                strcat(buffer_string, " ");
+                            printf("\nSe enviara un mensaje privado\n");
+                            char buffer_string[MSG_LIMIT + 32];					
+
+                            char *token = strtok(request->send_message->content, " ");
+                            while (token != NULL){
+                                if (strcmp(token, "/priv") !=0) {
+                                    strcat(buffer_string, token);
+                                    strcat(buffer_string, " ");
+                                }
+                                token = strtok(NULL , " ");
                             }
-                            token = strtok(NULL , " ");
+                            strcat(buffer_string, ". De: ");
+                            strcat(buffer_string, cli->name);
+                            strcat(buffer_string, " \n");
+                            trim_newline(buffer_string);
+
+                            char *space_pos = strchr(buffer_string, ' ');
+                            char *receiver = "";
+                            char *message_buffer = "";
+
+
+                            if(space_pos != NULL) {
+                                *space_pos = '\0';
+                                receiver = buffer_string;
+                                message_buffer = space_pos + 1;
+                            }
+
+                            printf("destinatario: %s\n", receiver);
+                            printf("mensaje: %s\n", message_buffer);
+                            send_private_msg(message_buffer, receiver);
+
                         }
-                        strcat(buffer_string, ". De: ");
-                        strcat(buffer_string, cli->name);
-                        strcat(buffer_string, " \n");
-                        trim_newline(buffer_string);
-
-                        char *space_pos = strchr(buffer_string, ' ');
-                        char *receiver = "";
-                        char *message_buffer = "";
-
-
-                        if(space_pos != NULL) {
-                            *space_pos = '\0';
-                            receiver = buffer_string;
-                            message_buffer = space_pos + 1;
-                        }
-
-                        printf("destinatario: %s\n", receiver);
-                        printf("mensaje: %s\n", message_buffer);
-                        strcat(message_buffer, "\n");
-
-                        send_private_msg(message_buffer, receiver);
-
-
-                        //clearing buffer_string
-                        memset(buffer_string, '\0', sizeof(buffer_string));
+        
                         break;
 					//case CHAT__OPERATION__UPDATE_STATUS:
 					//	handle_update_status_request(cli, request->update_status);

@@ -8,18 +8,32 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <stdbool.h> 
 #include "chat.pb-c.h"
 
 #define LENGTH 3000
+#define BUFFER_SIZE 1024
+#define MAX_QUEUE_SIZE 100 
+
+#define MAX_HISTORY_SIZE 100
+
 
 // Global variables
 int exit_status = 0;
 int sockfd = 0;
 char name[32];
+bool printSend = false;
+bool isInGeneral = false;
 
 void manage_exit(int sig) {
     exit_status = 1;
 }
+
+struct ThreadArgs {
+    int sock;
+    const char *username;
+};
+
 
 
 
@@ -28,12 +42,30 @@ void receiver() {
     while (1) {
         int receive = recv(sockfd, message, LENGTH, 0);
         if (receive > 0) {
+
+
+            // Intenta desempaquetar como un mensaje Protobuf
+            Chat__SendMessageRequest *send_message = chat__send_message_request__unpack(NULL, receive, message);
+            if (send_message == NULL) {
+                // Si falla el desempaquetado, asume que es un mensaje de texto sin procesar
+                message[receive] = '\0';  // Asegúrate de que el mensaje esté null-terminated
+                
+                printf("%s\n", message);
+            } else {
+                // Maneja el mensaje Protobuf
+                printf("[Mensaje general]: %s\n", send_message->content);
+                chat__send_message_request__free_unpacked(send_message, NULL);
+            }
+            //printf("%s", "$ ");
+            fflush(stdout);
+
+
             // Intenta desempaquetar como un mensaje Protobuf
             Chat__Response *response = chat__response__unpack(NULL, receive, message);
             if (response == NULL) {
                 // Si falla el desempaquetado, asume que es un mensaje de texto sin procesar
                 message[receive] = '\0';  // Asegúrate de que el mensaje esté null-terminated
-                printf("%s\n", message);
+                //printf("%s\n", message);
             } else {
                 // Maneja el mensaje Protobuf
                 if (response->operation == CHAT__OPERATION__INCOMING_MESSAGE && response->incoming_message) {
@@ -91,9 +123,11 @@ void trim_newline (char* str) {
     }
 }
 
-void sender() {
+
+void sender(void *args_ptr) {
     char message[LENGTH] = {};
     char buffer[LENGTH + 32] = {};
+
 
     while(1) {
         printf("%s", "$ ");
@@ -142,16 +176,75 @@ void sender() {
             send(sockfd, request_buffer, request_size, 0);
             free(request_buffer);
         } else if (strncmp(message, "/priv ", 6) == 0) { // /priv <to> <message>
-            printf("Mandar mensaje privado\n");
-		    send(sockfd, message, strlen(message), 0);
+            // Inicializar la solicitud
+            Chat__Request request = CHAT__REQUEST__INIT;
+            request.operation = CHAT__OPERATION__SEND_MESSAGE;
+
+            // Preparar el mensaje
+            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_SEND_MESSAGE;
+            send_message_request.recipient = (char *)"Usuario"; // Mensaje de difusión
+            send_message_request.content = (char *)message; // Contenido del mensaje
+
+            request.send_message = &send_message_request;
+
+            // Empaquetar la solicitud
+            size_t request_size = chat__request__get_packed_size(&request);
+            uint8_t *request_buffer = malloc(request_size);
+            chat__request__pack(&request, request_buffer);
+
+            // Enviar la solicitud al servidor
+            if (send(sockfd, request_buffer, request_size, 0) < 0) {
+                perror("ERROR: No se pudo enviar el mensaje");
+            }
+
+            // Limpiar la memoria
+            free(request_buffer);
+            //free(send_message_request.recipient);
+            //free(send_message_request.content);
 
         } else if (strstr(message, "/info")) { // /info <user>
-            printf("Buscar informacion de usuario\n");
-		    send(sockfd, message, strlen(message), 0); 
+            printf("\nSe busca info de usuario\n");
+            request.operation = CHAT__OPERATION__GET_USERS;
+            Chat__UserListRequest user_list_request = CHAT__USER_LIST_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_GET_USERS;
+            user_list_request.username = (char *)message;
+            request.get_users = &user_list_request;
+
+            size_t request_size = chat__request__get_packed_size(&request);
+            uint8_t *request_buffer = malloc(request_size);
+            chat__request__pack(&request, request_buffer);
+            send(sockfd, request_buffer, request_size, 0);
+            free(request_buffer);
         } else {
-            printf("Enviar mensaje general\n");
-            sprintf(buffer, "%s: %s\n", name, message);
-            send(sockfd, buffer, strlen(buffer), 0);
+            // Inicializar la solicitud
+            Chat__Request request = CHAT__REQUEST__INIT;
+            request.operation = CHAT__OPERATION__SEND_MESSAGE;
+
+            // Preparar el mensaje
+            Chat__SendMessageRequest send_message_request = CHAT__SEND_MESSAGE_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_SEND_MESSAGE;
+            send_message_request.recipient = (char *)""; // Mensaje de difusión
+            send_message_request.content = (char *)message; // Duplicar el contenido del mensaje
+
+            request.send_message = &send_message_request;
+
+            // Empaquetar la solicitud
+            size_t request_size = chat__request__get_packed_size(&request);
+            uint8_t *request_buffer = malloc(request_size);
+            chat__request__pack(&request, request_buffer);
+
+            // Verificar el contenido del buffer antes de enviar
+            //printf("Contenido del buffer a enviar: %s\n", message);
+
+            send(sockfd, request_buffer, request_size, 0);
+            // Enviar la solicitud al servidor
+            if (send(sockfd, request_buffer, request_size, 0) < 0) {
+                perror("ERROR: No se pudo enviar el mensaje");
+            }
+
+            free(request_buffer);
+            //free(send_message_request.content);
         }
 
         // Empaquetar y enviar la solicitud
