@@ -139,7 +139,14 @@ message Response {
 
 Para iniciar el servidor de chat:
 ```bash
-./server
+./server <Puerto>
+```
+
+### Ejecutar el Cliente
+
+Para iniciar el servidor de chat:
+```bash
+./client <Puerto>
 ```
 
 ## Comandos de Cliente
