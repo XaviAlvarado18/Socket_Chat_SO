@@ -327,8 +327,8 @@ int main(int argc, char **argv){
     printf("Lista de comandos\n");
     printf("+------------------------------------------------+\n");
     printf("1. Escribe cualquier texto para enviar un mensaje \n");
-    printf("2. /priv <username> <message> +\n");
-    printf("3. Escribe cualquier texto para enviar un mensaje \n");
+    printf("2. Para enviar mensajes privados: /priv <username> <message> +\n");
+    printf("3. Usar comandos de /Activo \n");
     printf("4. /priv <username> <message> +\n");
 
     while (1){
