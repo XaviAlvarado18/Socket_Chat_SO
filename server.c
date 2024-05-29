@@ -536,7 +536,7 @@ void *handle_client(void *arg) {
 
             chat__request__free_unpacked(request, NULL);
         } else if (receive == 0 || (receive > 0 && strcmp((char *)buffer, "/exit") == 0)) {
-            sprintf(buffer, "%s se ha pirado.\n", cli->name);
+            sprintf(buffer, "%s se ha ido.\n", cli->name);
             printf("%s", buffer);
             send_message((char *)buffer, cli->uid);
             leave_flag = 1;
@@ -596,9 +596,9 @@ int main(int argc, char **argv){
 	}
 
 	printf("\n");
-	printf("+-----------------------+\n");
-	printf("|   ¡Entrando al chat!  |\n");
-	printf("+-----------------------+\n");
+	printf("+-------------------------+\n");
+	printf("|   ¡Iniciando servidor!  |\n");
+	printf("+-------------------------+\n");
 	printf("\n");
 
 	while(1){
