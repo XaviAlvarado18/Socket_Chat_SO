@@ -178,7 +178,17 @@ void sender(void *args_ptr) {
             chat__request__pack(&request, request_buffer);
             send(sockfd, request_buffer, request_size, 0);
             free(request_buffer);
-        } else if (strncmp(message, "/priv ", 6) == 0) { // /priv <to> <message>
+        }else if (strcmp(message, "/help") == 0) {
+            printf("\n");
+            printf("---------------Lista de comandos------------------\n");
+            printf("--------------------------------------------------\n");
+            printf("\n1. Escribe cualquier texto para enviar un mensaje \n");
+            printf("2. Para enviar mensajes privados: /priv <username> <message>\n");
+            printf("3. Para obtener informacion de un usuario: /info <username> \n");
+            printf("4. Para obtener la lista de usuarios conectados: /list\n");
+            printf("5. Para cambiar de status de un usuario: /<status>\n");
+            printf("\n");
+        }  else if (strncmp(message, "/priv ", 6) == 0) { // /priv <to> <message>
             // Inicializar la solicitud
             Chat__Request request = CHAT__REQUEST__INIT;
             request.operation = CHAT__OPERATION__SEND_MESSAGE;
@@ -283,6 +293,13 @@ int main(int argc, char **argv){
     fgets(name, 32, stdin);
     trim_newline(name);
 
+
+    printf("--------------------------------------------------\n");
+	printf("|            ¡Entrando al chat !                 |\n");
+	printf("--------------------------------------------------\n");
+    printf("\n");
+
+
     if (strlen(name) > 32 || strlen(name) < 2){
         printf("El nombre debe tener una longitud de maxima de 30 caracteres y minima de 2 caracteres\n");
         return EXIT_FAILURE;
@@ -305,15 +322,7 @@ int main(int argc, char **argv){
     // Send name
     send(sockfd, name, 32, 0);
 
-    printf("\n");
-    printf("---------------Lista de comandos------------------\n");
-    printf("--------------------------------------------------\n");
-    printf("\n1. Escribe cualquier texto para enviar un mensaje \n");
-    printf("2. Para enviar mensajes privados: /priv <username> <message>\n");
-    printf("3. Para obtener informacion de un usuario: /info <username> \n");
-    printf("4. Para obtener la lista de usuarios conectados: /list\n");
-    printf("5. Para cambiar de status de un usuario: /<status>\n");
-    printf("\n");
+    
 
     pthread_t send_msg_thread;
     if(pthread_create(&send_msg_thread, NULL, (void *) sender, NULL) != 0){
