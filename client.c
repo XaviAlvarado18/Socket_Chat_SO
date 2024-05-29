@@ -146,6 +146,7 @@ void sender(void *args_ptr) {
             printf("Cambiar estado a activo\n");
             request.operation = CHAT__OPERATION__UPDATE_STATUS;
             Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_UPDATE_STATUS;
             update_status_request.username = name;
             update_status_request.new_status = CHAT__USER_STATUS__ONLINE;
             request.update_status = &update_status_request;
@@ -153,6 +154,7 @@ void sender(void *args_ptr) {
             printf("Cambiar estado a inactivo\n");
             request.operation = CHAT__OPERATION__UPDATE_STATUS;
             Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_UPDATE_STATUS;
             update_status_request.username = name;
             update_status_request.new_status = CHAT__USER_STATUS__OFFLINE;
             request.update_status = &update_status_request;
@@ -160,6 +162,7 @@ void sender(void *args_ptr) {
             printf("Cambiar estado a ocupado\n");
             request.operation = CHAT__OPERATION__UPDATE_STATUS;
             Chat__UpdateStatusRequest update_status_request = CHAT__UPDATE_STATUS_REQUEST__INIT;
+            request.payload_case = CHAT__REQUEST__PAYLOAD_UPDATE_STATUS;
             update_status_request.username = name;
             update_status_request.new_status = CHAT__USER_STATUS__BUSY;
             request.update_status = &update_status_request;
