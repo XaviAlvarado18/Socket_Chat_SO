@@ -17,13 +17,13 @@
 
 #define MAX_HISTORY_SIZE 100
 
-
-// Global variables
+char name[32];
+bool isInGeneral = false;
+bool printSend = false;
 int exit_status = 0;
 int sockfd = 0;
-char name[32];
-bool printSend = false;
-bool isInGeneral = false;
+
+
 
 void manage_exit(int sig) {
     exit_status = 1;
@@ -306,11 +306,14 @@ int main(int argc, char **argv){
     send(sockfd, name, 32, 0);
 
     printf("\n");
-	printf("+-----------------------+\n");
-	printf("|   ¡Entrando al chat!  |\n");
-	printf("+-----------------------+\n");
-	printf("\n");
-
+    printf("---------------Lista de comandos------------------\n");
+    printf("--------------------------------------------------\n");
+    printf("\n1. Escribe cualquier texto para enviar un mensaje \n");
+    printf("2. Para enviar mensajes privados: /priv <username> <message>\n");
+    printf("3. Para obtener informacion de un usuario: /info <username> \n");
+    printf("4. Para obtener la lista de usuarios conectados: /list\n");
+    printf("5. Para cambiar de status de un usuario: /<status>\n");
+    printf("\n");
 
     pthread_t send_msg_thread;
     if(pthread_create(&send_msg_thread, NULL, (void *) sender, NULL) != 0){
@@ -324,12 +327,7 @@ int main(int argc, char **argv){
         return EXIT_FAILURE;
     }
 
-    printf("Lista de comandos\n");
-    printf("+------------------------------------------------+\n");
-    printf("1. Escribe cualquier texto para enviar un mensaje \n");
-    printf("2. Para enviar mensajes privados: /priv <username> <message> +\n");
-    printf("3. Usar comandos de /Activo \n");
-    printf("4. /priv <username> <message> +\n");
+    
 
     while (1){
 

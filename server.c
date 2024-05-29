@@ -18,10 +18,10 @@ static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
 #define LENGTH 3000
 
-// Estructura del cliente
+
 typedef struct{
 	struct sockaddr_in address;
-	int state; // 0="activo", 1="ocupado" o 2="inactivo"
+	int state; 
 	char name[32];
 	int sockfd;
 	int uid;
