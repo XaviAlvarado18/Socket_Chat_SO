@@ -375,6 +375,16 @@ void send_message2(const char *message_content, int uid) {
 }
 
 
+void handle_update_status_request(client_obj *cli, Chat__UpdateStatusRequest *request) {
+    if (request == NULL) {
+        printf("Error: La solicitud de actualización de estado es nula\n");
+        return;
+    }
+
+    // Actualizar el estado del cliente
+    cli->state = request->new_status;
+    printf("El estado de %s ha sido actualizado a %d\n", cli->name, cli->state);
+}
 
 
 static int uid_counter = 10;
@@ -515,9 +525,9 @@ void *handle_client(void *arg) {
                         }
         
                         break;
-					//case CHAT__OPERATION__UPDATE_STATUS:
-					//	handle_update_status_request(cli, request->update_status);
-					//	break;
+					case CHAT__OPERATION__UPDATE_STATUS:
+						handle_update_status_request(cli, request->update_status);
+						break;
 					// Añade más operaciones aquí
 					default:
 						fprintf(stderr, "Unknown operation.\n");
